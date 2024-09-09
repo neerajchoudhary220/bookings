@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Booking extends Model
 {
@@ -16,4 +18,8 @@ class Booking extends Model
         'booking_date',
         'booking_time',
     ];
+
+
+
+
 }

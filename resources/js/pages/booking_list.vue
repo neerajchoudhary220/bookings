@@ -13,6 +13,7 @@
         </div>
 
         <!-- CRUD Table -->
+      
         <table class="table table-bordered table-striped">
             <thead class="thead-dark">
                 <tr>
@@ -23,7 +24,7 @@
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
-            <tbody id="bookingTable" v-if="bookings">
+            <tbody id="bookingTable" v-if="bookings && bookings.length > 0">
                 <tr v-for="booking, index in bookings">
                     <td>{{ index + 1 }}</td>
                     <td>{{ booking.name }}</td>
@@ -43,7 +44,34 @@
                 </tr>
 
             </tbody>
+            <tfoot v-else>
+                <tr>
+                    <td colspan="5" class="text-center">No bookings found.</td>
+                </tr>
+
+            </tfoot>
+
+            <tfoot v-if="bookings">
+
+                <tr>
+                    <td colspan="5">
+                        <div v-if="paginators" class="mt-3 text-start">
+            <div class="m-auto">
+                <button v-for="page in paginators" :disabled="page.url === null" class="btn mx-1 mb-2"
+                    :class="{ 'btn-info': page.active, 'btn-dark': !page.active }" :value="page.url"
+                    @click="changePage(page.url)" v-html="page.label">
+                </button>
+            </div>
+            
+
+
+        </div>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
+      
+
     </div>
 </template>
 
@@ -53,13 +81,21 @@ import axiosinstance from '../modules/axiosinstance';
 export default {
     name: 'Booking',
     setup() {
+        const paginators = ref()
         const bookings = ref()
+        const link = ref(`/booking`)
+
         const fetchBookings = () => {
-            axiosinstance.get('/booking')
+            axiosinstance.get(link.value)
                 .then(response => {
                     console.log(response.data.data);
                     bookings.value = response.data.data;
+                    paginators.value = response.data.meta.links
                 })
+        }
+        const changePage = (url) => {
+            link.value = url
+            fetchBookings()  // Fetch movie data when changing page
         }
 
         const deleteBooking = (id) => {
@@ -75,7 +111,7 @@ export default {
             fetchBookings();
         })
 
-        return { bookings, deleteBooking }
+        return { bookings, deleteBooking, paginators, changePage }
     }
 
 }

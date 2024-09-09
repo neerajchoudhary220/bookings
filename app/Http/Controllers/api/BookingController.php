@@ -63,6 +63,6 @@ class BookingController extends Controller
     }
 
     public function details(Booking $booking){
-        return new BookingDetailsResource($booking);
+        return new BookingListResource($booking);
     }
 }

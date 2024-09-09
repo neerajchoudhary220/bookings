@@ -6,30 +6,30 @@
                     <div class="card-header text-center">
                         Booking Details
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" v-if="bookings">
                         <ul class="list-group">
                             <li class="list-group-item">
-                                <span class="item-label">Name:</span> John Doe
+                                <span class="item-label">Name:</span> {{ bookings.name }}
                             </li>
                             <li class="list-group-item">
-                                <span class="item-label">Email:</span> johndoe@example.com
+                                <span class="item-label">Email:</span>{{ bookings.email }}
                             </li>
                             <li class="list-group-item">
-                                <span class="item-label">Booking Type:</span> Full Day
+                                <span class="item-label">Booking Type:</span> {{ bookings.booking_type }}
                             </li>
                             <li class="list-group-item">
-                                <span class="item-label">Booking Date:</span> 2024-09-09
+                                <span class="item-label">Booking Date:</span> {{ bookings.booking_date }}
                             </li>
                             <li class="list-group-item">
-                                <span class="item-label">Booking Slot:</span> Morning
+                                <span class="item-label">Booking Slot:</span> {{ bookings.booking_slot }}
                             </li>
                             <li class="list-group-item">
-                                <span class="item-label">Booking Time:</span> 09:00 AM
+                                <span class="item-label">Booking Time:</span> {{ bookings.booking_time }}
                             </li>
                         </ul>
                     </div>
                     <div class="card-footer">
-                        <router-link :to="{ name: 'booking_list'}">
+                        <router-link :to="{ name: 'booking_list' }">
                             <button class="btn btn-secondary">Back</button>
                         </router-link>
                     </div>
@@ -40,13 +40,33 @@
 </template>
 
 <script>
+import Bookings from '../modules/booking';
+import { onMounted,ref } from 'vue'
+import { useRoute } from "vue-router";
+
+
 export default {
     name: 'Booking_details',
 
+
     setup() {
+        const { bookingDetails } = Bookings()
+        const bookings = ref()
+        const route = useRoute(0)
+        const booking_id = route.params.bookingId
+
+        const fetchBookingsDetails = async () => {
+            if (booking_id) {
+                const res = await bookingDetails(booking_id)
+                bookings.value = res.data.data
 
 
-        return {}
+            }
+        }
+        onMounted(async () => {
+            await fetchBookingsDetails()
+        })
+        return {bookings}
     }
 }
 </script>

@@ -88,8 +88,11 @@
         </div>
 
         <!-- Submit Button -->
-        <div class="text-center mt-3">
-          <button type="submit" class="btn btn-primary">Submit</button>
+        <div class="text-start mt-3">
+          <router-link :to="{ name: 'booking_list' }">
+          <button class="btn btn-secondary mr-2" type="button">Back</button>
+          </router-link> 
+          <button type="submit" class="btn btn-info">Submit</button>
         </div>
       </form>
     </div>
@@ -101,6 +104,7 @@ import { onMounted, reactive, ref, toRefs } from 'vue';
 import axiosinstance from '../modules/axiosinstance'
 import { useRouter, useRoute } from "vue-router";
 import Bookings from '../modules/booking';
+import moment from 'moment';
 
 
 export default {
@@ -151,6 +155,9 @@ export default {
           form.booking_date = res.data.data.booking_date;
           form.booking_slot = res.data.data.booking_slot;
           form.booking_time = res.data.data.booking_time;
+          form.booking_time = moment(form.booking_time,'HH:mm').format('hh:mm')
+
+
         }
       }
     }
@@ -159,7 +166,8 @@ export default {
     const submitForm = async () => {
       clearErrors()
       const uRL = (booking_id) ? `/booking/update/${booking_id}` : 'booking/add'
-
+      form['booking_time']=moment(form.booking_time,'hh:mm A').format('HH:mm')
+      console.log("form:",form)
       axiosinstance.post(uRL, form).then((res) => {
         if (res.status == 200) {
           resetForm();
