@@ -50,7 +50,7 @@ class BookingAvailability implements ValidationRule
             }
 
             if ($this->booking_type == 'full_day') {
-                $fail('Cannot book full day if half day is already booked');
+                $fail('Can not book full day if half day is already booked');
 
             }
 
